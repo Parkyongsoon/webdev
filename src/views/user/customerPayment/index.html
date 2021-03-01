@@ -1,0 +1,101 @@
+<div>
+  <h1>Welcome! Eluly!</h1>
+  <% include ../partials/header %>
+  <% include ../partials/aside %>
+</div>
+<br>
+<div>
+  <div>
+    <label for="">제목 : </label>
+    <span><%= payment.title %></span>
+  </div>
+  <div>
+    <label for="">이름 : </label>
+    <span><%= payment.name %></span>
+  </div>
+  <div>
+    <label for="">기간 : </label>
+    <span><%= payment.term %></span>
+  </div>
+  <div>
+    <label for="">가격 : </label>
+    <span><%= payment.price %></span>
+  </div>
+  <div>
+    <label for="">작업자 : </label>
+    <span><%= payment.designerName %></span>
+  </div>
+  <div>
+    <label for="">무통장</label>
+    <input type="radio" name="payment" id="nobankbook" checked>
+    <label for="">카드</label>
+    <input type="radio" name="payment" id="card">
+  </div>
+  <div>
+    <button id="payment">결제하기</button>
+  </div>
+  <script>
+    $('#nobankbook').click(function() {
+      $('#nobankbook').prop('checked', true);
+      $('#card').prop('checked', false);
+      $('#payment').removeAttr('onclick');
+      $('#payment').attr('type', 'submit');
+    });
+    $('#card').click(function() {
+      $('#nobankbook').prop('checked', false);
+      $('#card').prop('checked', true);
+      $('#payment').removeAttr('type');
+      $('#payment').attr('onclick', 'requestPay();');
+    })
+  </script>
+  <!-- iamport.payment.js -->
+  <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+  <script>
+    IMP.init('imp17572517'); //"가맹점 식별코드"
+    const amount = parseInt('<%= payment.price %>');
+
+    // IMP.request_pay(param, callback) 호출
+    function requestPay() {
+      IMP.request_pay({ // param
+        pg: "html5_inicis",
+        pay_method: "card",
+        merchant_uid: "merchant_" + new Date().getTime(),
+        name: "<%= payment.title %>",
+        amount: amount,
+        buyer_name: "<%= payment.name %>",
+        buyer_tel: "<%= payment.tbl_eluly_user.phone %>"
+      }, rsp => { // callback        
+        if (rsp.success) { // 결제 성공 시: 결제 승인 또는 가상계좌 발급에 성공한 경우
+            axios({
+              url: 'http://localhost:3000/api/customerPayment/complete/<%= locals.isAuthenticate.userId %>', // 가맹점 서버
+              method: 'post',
+              header: { 'Content-Type': 'application/json' },
+              data: {
+                impUid: rsp.imp_uid,
+                merchantUid: rsp.merchant_uid,
+                title: rsp.name,
+                price: rsp.paid_amount,
+                name: rsp.buyer_name,
+                phone: rsp.buyer_tel,
+                cardName: rsp.card_name,
+                payMethod: rsp.pay_method
+              }
+            }).then(result => {
+              // 가맹점 서버 결제 API 성공시 로직
+              switch(result.data.status) {
+                case 'vbankIssued':
+                  break;
+                case 'success':
+                  alert('결제가 성공하였습니다.');
+                  window.location.href = 'http://localhost:3000/api/myPage/myPayment/confirm/<%= locals.isAuthenticate.userId %>'
+                  break;
+              }
+            })
+        } else {
+          // 결제 실패 시 로직,
+          alert('결제에 실패하였습니다. 에러 내용: ' + rsp.error_msg);
+        }
+      });
+    };
+  </script>
+</div>

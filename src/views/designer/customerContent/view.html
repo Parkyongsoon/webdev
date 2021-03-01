@@ -1,0 +1,51 @@
+<div>
+  <h1>Welcome Designer! Eluly!</h1>
+  <% include ../partials/header %>
+  <% include ../partials/aside %>
+</div>
+<div>
+  <div id="content">
+    <div>
+      <div>
+        <div>
+          <label for="">제목</label>
+          <span><%= customerContentView.title %></span>
+        </div>
+        <div>
+          <label for="">이름</label>
+          <span><%= customerContentView.name %></span>
+        </div>
+        <div>
+          <label for="">file : </label>
+          <% if(!customerContentView.files) { %>
+            <span>파일이 없습니다</span>
+          <% } else { %>
+            <% for(let i = 0; i < customerContentView.files.length; i ++) { %>
+              <span><a href="/designer/api/customerContent/<%= customerContentView.id %>/download/<%= customerContentView.files[i] %>"><%= customerContentView.files[i] %></a></span>
+            <% } %>
+          <% } %>
+        </div>
+        <div>
+          <label for="">내용</label>
+          <span><%- customerContentView.content %></span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <form action="/designer/api/customerContent/apply/<%= locals.isAuthenticate.userId %>?_method=put" method="post">
+        <input type="hidden" name="contentId" value="<%= customerContentView.id %>">
+        <% let apply = customerContentView.apply
+           let designerId = locals.isAuthenticate.userId.toString()
+           if(apply === null || apply.indexOf(designerId) === -1) { %>
+            <button type="submit" onclick="return confirm('정말 지원?')">지원</button>
+        <% } else { %>
+          <% for(let i = 0; i < apply.length; i++) { %>
+            <% if(apply[i] === designerId) { %>
+              <button type="submit" disabled>지원</button>
+            <% } %>
+          <% } %>
+        <% } %>
+      </form>
+    </div>
+  </div>
+</div>

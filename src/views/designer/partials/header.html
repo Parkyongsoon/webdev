@@ -1,0 +1,17 @@
+<div>
+  <% if(locals.isAuthenticate === undefined) { %>
+  <div>
+    <span><a href="/designer/api/auth/login">로그인</a></span>
+  </div>
+  <div>
+    <span><a href="/designer/api/auth/register">회원가입</a></span>
+  </div>
+  <% } else { %>
+    <p><%= locals.isAuthenticate.userName %>님 어서옵쇼</p>
+    <form action="/designer/api/auth/logout" method="post">
+      <div>
+        <button type="submit">로그아웃</button>
+      </div>
+    </form>
+  <% } %>
+</div>

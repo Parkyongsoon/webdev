@@ -1,0 +1,71 @@
+<div id="popupWrap">
+  <% popup.forEach(function(p, i) { %>
+    <form id="popForm<%= i %>" class="popups" name="frm<%= i %>">
+      <table id="popupTable" cellpadding="0" cellspacing="0">
+        <tbody id="popupTbody">
+          <tr>
+            <td id="popupFile">
+              <img src="/uploads/popupFile/<%= p.files %>" width="<%= p.width %>" height="<%= p.height %>" />
+            </td>
+          </tr>
+          <tr height="30">
+            <td align="center" bgcolor="#000000">
+              <input class="PopupCheck" type="checkbox" name="pop<%= i %>" />
+              <span style="font-size:13px;color:#FFFFFF;"> 1일동안 이 창을 열지 않음 </span>
+              <span style="font-size:13px;color:#FFFFFF;"><a href="javascript:closePop<%= i %>();">[닫기]</a></span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </form> 
+    <% }) %>
+  </div>
+  <script src="/js/popup.js"></script>
+  <script>
+  $(function() {
+    var width = $('#popForm0').width();
+    var width1 = width + $('#popForm1').width();
+
+    $('#popForm1').css({ 'left' :  width });
+    $('#popForm2').css({ 'left' : width1 });
+  })
+
+  var popup = document.querySelectorAll('.popups')
+  for(var i = 0; i < popup.length; i++) {
+    dragElement(popup[i]);
+  }
+
+  function dragElement(elmnt) {
+    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    if (document.getElementById(elmnt.id)) {
+      document.getElementById(elmnt.id).onmousedown = dragMouseDown;
+    } else {
+      elmnt.onmousedown = dragMouseDown;
+    }
+  
+    function dragMouseDown(e) {
+      e = e || window.event;
+      e.preventDefault();
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      document.onmouseup = closeDragElement;
+      document.onmousemove = elementDrag;
+    }
+  
+    function elementDrag(e) {
+      e = e || window.event;
+      e.preventDefault();
+      pos1 = pos3 - e.clientX;
+      pos2 = pos4 - e.clientY;
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+      elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    }
+  
+    function closeDragElement() {
+      document.onmouseup = null;
+      document.onmousemove = null;
+    }
+  }
+</script>

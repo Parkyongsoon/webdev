@@ -1,0 +1,52 @@
+<div>
+  <h1>Welcome! Eluly!</h1>
+  <% include ../../partials/header %>
+  <% include ../../partials/myPageAside %>
+</div>
+<br>
+<div>
+  <div>
+    <% if(errorMsg) { %>
+      <div class="alert alert-danger"><%= errorMsg %></div>
+    <% } %>
+  </div>
+  <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <form action="/api/myPage/userInfo/edit/<%= userInfo.id %>?_method=put" method="post">
+    <div>
+      <label>Name</label>
+      <input type="text" name="name" value="<%= userInfo.name %>">
+    </div>
+    <div>
+      <label for="">현재 비밀번호</label>
+      <input type="password" name="currentPassword" id="currentPassword">
+    </div>
+    <div>
+      <label for="">새 비밀번호</label>
+      <input type="password" name="newPassword" id="newPassword">
+    </div>
+    <div>
+      <label for="">새 비밀번호 확인</label>
+      <input type="password" name="confirmPassword" id="confirmPassword">
+    </div>
+    <div>
+      <label>E-mail</label>
+      <input type="text" name="email" value="<%= userInfo.email %>">
+    </div>
+    <div>
+      <label for="">주소</label>
+      <input type="text" name="postcode" id="postcode" placeholder="우편번호" value="<%= userInfo.postcode %>"">
+      <input type="button" onclick="execDaumPostcode()" value="우편번호 찾기"><br>
+      <input type="text" name="address" id="address" placeholder="주소" value="<%= userInfo.address %>"><br>
+      <input type="text" name="detailAddress" id="detailAddress" placeholder="상세주소" value="<%= userInfo.detailAddress %>"">
+      <input type="text" name="extraAddress" id="extraAddress" placeholder="참고항목" value="<%= userInfo.extraAddress %>"">
+      <script src="/js/postcode.js"></script>
+    </div>
+    <div>
+      <label>Phone</label>
+      <input type="text" name="phone" value="<%= userInfo.phone %>">
+    </div>
+    <div>
+      <button type="submit" onclick="return confirm('수정하시겠습니까?')">수정</button>
+    </div>
+  </form>
+</div>

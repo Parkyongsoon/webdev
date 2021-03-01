@@ -1,0 +1,56 @@
+<%if (!popup || popup.length === 0) { %>
+<% } else { %> 
+  <% include ./partials/popup  %> 
+<% } %>
+<div>
+  <h1>Welcome! Eluly!</h1>
+  <% include ./partials/header %>
+  <% include ./partials/aside %>
+</div>
+<div>
+  <!-- <div>
+    <h1>faker</h1>
+    <form action="/" method="get">
+      <input type="text" name="amount" id="amount">
+      <button type="submit">생성</button>
+    </form>
+  </div> -->
+  <div>
+    <h1>검색</h1>
+    <form action="/api/search" method="get">
+      <input type="text" name="search" id="search">
+      <button type="submit">검색</button>
+    </form>
+  </div>
+  <div>
+    <% if(hits) { %>
+      <% if(hits.length === 0 ) { %>
+        <div>
+          <span>해당 게시물이 없습니다.</span>
+        </div>
+      <% } else { %>
+        <% hits.forEach(function(h) { %>
+          <div>
+            <%= h._source.id %>
+            <%= h._source.title %>
+            <%= h._source.name %>
+            <% if(h._index === 'user') { %>
+              <span>user</span>
+            <% } else if(h._index === 'board') { %>
+              <span>board</span>
+            <% } else if(h._index === 'content') { %>
+              <span>content</span>  
+            <% } else { %>
+              <span>etc</span>
+            <% } %>
+          </div>
+        <% }) %>
+        <div>
+          <% include ./partials/pagination %>
+        </div>
+      <% } %>
+    <% } else { %>
+
+    <% } %>
+  </div>
+</div>

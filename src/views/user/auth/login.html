@@ -1,0 +1,50 @@
+<div>
+  <h1>Welcome! Eluly!</h1>
+  <% include ../partials/header %>
+  <% include ../partials/aside %>
+</div>
+<div>
+  <h1>로그인</h1>
+  <div>
+    <div>
+      <% if(errorMsg) { %>
+        <div class="alert alert-danger"><%= errorMsg %></div>
+      <% } %>
+    </div>
+    <form action="/api/auth/login" method="post">
+      <div>
+        <div>
+          <label for="">아이디</label>
+          <input type="text" name="username" id="username" value="<%= remember ? remember : '' %>">
+        </div>
+        <div>
+          <label for="">비밀번호</label>
+          <input type="password" name="password" id="password">
+        </div>
+        <div>
+          <label for="">아이디 저장하기</label>
+          <input type="checkbox" name="rememberUsername" id="rememberUsername" <%= remember ? check="checked" : '' %>>
+        </div>
+        <div>
+          <button type="submit">로그인</button>
+        </div>
+      </div>
+    </form>
+    <div>
+      <span><a href="/api/auth/findId">아이디 찾기</a></span>
+      <span><a href="/api/auth/findPassword">비밀번호 찾기</a></span>
+    </div>
+    <div>
+      <!-- kakao login -->
+      <a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=<%= apiKey %>&redirect_uri=<%=callbackURL %>">
+        <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png"/>
+      </a>
+    </div>
+    <div>
+      <!-- naver login -->
+      <a href="https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=<%= naverKey %>&redirect_uri=<%= naver_callbackURL %>&state=<%= state %>">
+        <img height='50' src='http://static.nid.naver.com/oauth/small_g_in.PNG'/>
+      </a>
+    </div>
+  </div>
+</div>

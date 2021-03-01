@@ -1,0 +1,303 @@
+<div>
+  <h1>Welcome! Eluly!</h1>
+  <% include ../partials/header %>
+  <% include ../partials/aside %>
+</div>
+<div id="content">
+  <div>
+    <div>
+      <div>
+        <label for="">제목</label>
+        <input type="text" name="title" id="title" value="<%= editView.title %>">
+      </div>
+      <div>
+        <label for="">이름</label>
+        <span><%= locals.isAuthenticate.userName %></span>
+      </div>
+      <div>
+        <label for="">기간</label>
+        <input type="text" name="term" id="term" value="<%= editView.term %>">
+      </div>
+      <div>
+        <label for="">금액</label>
+        <input type="text" name="price" id="price" value="<%= editView.price %>">
+      </div>
+      <div>
+        <div id="actions">
+          <div>
+            <span class="btn btn-success fileinput-button dz-clickable">
+              <span>Add File</span>
+            </span>
+          </div>
+        </div>
+        <div>
+          <span class="fileupload-process">
+            <div id="total-progress" class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+            </div>
+          </span>
+        </div>
+        <div class="table table-striped" class="files" id="previews">
+          <div id="template" class="file-row">
+            <!-- This is used as the file preview template -->
+            <div>
+                <span class="preview"><img data-dz-thumbnail /></span>
+            </div>
+            <div>
+                <p class="name" data-dz-name></p>
+                <strong class="error text-danger" data-dz-errormessage></strong>
+            </div>
+            <div>
+                <p class="size" data-dz-size></p>
+                <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                  <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+                </div>
+            </div>
+            <div>
+              <button data-dz-remove class="btn btn-warning cancel">
+                  <i class="glyphicon glyphicon-ban-circle"></i>
+                  <span>Cancel</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <link rel="stylesheet" href="/js/quill/quill.snow.css">
+        <div name="content" id="editor"><%- editView.content %></div>
+        <script src="/js/quill/quill.min.js"></script>
+        <script>
+          const toolbarOpt = [
+            ['bold', 'italic', 'underline', 'strike'],
+            ['blockquote', 'code-block'],
+            ['image']
+          ];
+
+          const editor = new Quill('#editor', {
+            theme: 'snow',
+            modules: {
+              toolbar: toolbarOpt
+            }
+          });
+          let currentContent = editor.getContents();
+          console.log(currentContent)
+
+          editor.on('text-change', (delta, oldDelta, source) => {
+            let currentContent = editor.getContents();
+            let diff = currentContent.diff(oldDelta);
+            let filename = ''
+
+            const filter = diff.ops.filter(i => i.insert && i.insert.image).map(i => i.insert.image)
+            console.log(filter === true)
+            console.log(filter.image)
+            // console.log(filter.length !== 0)
+            filename = filter.toString()
+            const fn = filename.substring(filename.lastIndexOf('/') + 1);
+            // console.log(fn)
+            if(filter.length !== 0) {
+              $.ajax({
+                url: '/api/customerContent/edit/delContentImg/<%= editView.id %>',
+                method: 'post',
+                data: {
+                  filename: fn
+                },
+                success: function() {
+                  console.log('success Send Redis')
+                }
+              });
+            }
+          });
+
+          editor.getModule('toolbar').addHandler('image', function() {
+            imgUpload();
+          });
+
+          const imgUpload = () => {            
+            const input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('name', 'files');
+            input.setAttribute('id', 'imgUp');
+            input.setAttribute('multiple', '');
+            input.click();
+
+            let currentContent = editor.getContents();
+
+            const filter = currentContent.ops.filter(i => i.insert && i.insert.image).map(i => i.insert.image)
+            // console.log(filter)
+
+            let filtering = [];
+            for(let i in filter) {
+              filtering.push(filter[i].substring(filter[i].lastIndexOf('/')+1))
+            }
+
+            // console.log(filtering)
+            input.onchange = () => {
+              const files = input.files;
+              const data = new FormData();
+              
+              // console.log(filtering)
+              for(let id in files) {
+                data.append('files', files[id]);
+              };
+
+              for(let id in filtering) {
+                data.append('filename', filtering[id]);
+              };
+
+              $.ajax({
+                url: '/api/customerContent/edit/contentImgEdit/<%= editView.id %>',
+                type: 'post',
+                enctype: 'multipart/form-data',
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                  
+                  const range = editor.getSelection();
+                  console.log(range)
+
+                  for(let id in data) {
+                    editor.insertEmbed(range.index, 'image', 'http://localhost:3000' + data[id])
+                    // const ql = document.querySelector('.ql-editor');
+                    // const p = document.createElement('p');
+                    // const img = document.createElement('img');
+                    // img.setAttribute('src', 'http://localhost:3000' + data[id])
+                    // console.log(img.ops[id].insert.image)
+                    // p.appendChild(img);
+                    // ql.appendChild(p);
+                    // console.log(ql)
+                  };
+                }
+              });
+            };
+          };
+        </script>
+      </div>
+    </div>
+    <div>
+      <button id="confirm">저장</button>
+    </div> 
+  </div>
+</div>
+<script src="/js/dropzone/dist/dropzone.js"></script>
+<link rel="stylesheet" href="/css/dz.css">
+<script>
+  // Get the template HTML and remove it from the doumenthe template HTML and remove it from the doument
+  const previewNode = document.querySelector("#template");
+  previewNode.id = "";
+  const previewTemplate = previewNode.parentNode.innerHTML;
+  previewNode.parentNode.removeChild(previewNode);
+  
+  const myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
+    url: '/api/customerContent/edit/<%= editView.id %>?_method=put', // Set the url
+    method: 'post',
+    paramName: function() { return 'files'; },
+    thumbnailWidth: 80,
+    thumbnailHeight: 80,
+    previewTemplate: previewTemplate,
+    autoProcessQueue: false,
+    previewsContainer: "#previews", // Define the container to display the previews
+    clickable: ".fileinput-button", // Define the element that should be used as click trigger to select files.
+    parallelUploads: 5,
+    maxFiles: 5,
+    maxFilesize: 5,
+    uploadMultiple: true,
+    init: function() {
+      const myDropzone = this;
+      const count = myDropzone.options.maxFiles;
+
+      $.get('/api/customerContent/edit/fileView/<%= editView.id %>', function(result) {
+        let existingFileCount = 0;
+        $.each(result, function(key, value) {        
+          let mockFile = value
+          myDropzone.emit("addedfile", mockFile);
+          myDropzone.emit("thumbnail", mockFile, '/uploads/contentFile/' + mockFile.name);
+          myDropzone.emit("success", mockFile);
+          myDropzone.files.push(mockFile);
+
+          existingFileCount = existingFileCount + 1;
+        });
+        myDropzone.options.maxFiles = myDropzone.options.maxFiles - existingFileCount;
+      });
+
+      this.on("maxfilesexceeded", function(file) {
+        alert('Max File Count: ' + count);
+        myDropzone.removeFile(file);
+      });
+    }
+  });
+  
+  // Update the total progress bar
+  myDropzone.on("totaluploadprogress", function(progress) {
+    document.querySelector("#total-progress .progress-bar").style.width = progress + "%";
+  });
+  
+  myDropzone.on("sending", function(file) {
+    // Show the total progress bar when upload starts
+    document.querySelector("#total-progress").style.opacity = "1";
+  });
+  
+  // Hide the total progress bar when nothing's uploading anymore
+  myDropzone.on("queuecomplete", function(progress) {
+    document.querySelector("#total-progress").style.opacity = "0";
+    // document.location.href = '/api/customerContent/<%= editView.id %>';
+  });
+
+  myDropzone.on("removedfile", function(file) {
+    const filename = file.name;
+
+    $.ajax({
+      url: '/api/customerContent/edit/fileDelete/<%= editView.id %>',
+      method: 'post',
+      data: {
+        filename: filename
+      },
+      success: function() {
+        console.log('success DEL')
+      }
+    });
+  });
+
+  $('#confirm').click(function(e) {
+    // e.preventDefault();
+    console.log(myDropzone.files)
+    let filename = [];
+    let filestatus = '';
+
+    myDropzone.files.map(f => {        
+      filename.push(f.name)
+    });
+    myDropzone.files.map(f => {        
+      filestatus += f.status
+    });
+
+    if(filestatus.indexOf('queued') === -1) {
+      console.log('1')
+      $.ajax({
+          url: '/api/customerContent/edit/<%= editView.id %>?_method=put',
+          method: 'post',
+          data: {
+            title: $('#title').val(),
+            term: $('#term').val(),
+            price: $('#price').val(),
+            content: $('#editor > .ql-editor').html(),
+            filename: filename
+          },
+          success: function() {
+            console.log('success');
+            // document.location.href = '/api/customerContent/<%= editView.id %>'
+          }
+        });
+    } else {
+      myDropzone.options.params = {
+        title: $('#title').val(),
+        term: $('#term').val(),
+        price: $('#price').val(),
+        content: $('#editor > .ql-editor').html(),
+        filename: filename
+      };
+
+      myDropzone.processQueue();
+    };
+  }); 
+</script>

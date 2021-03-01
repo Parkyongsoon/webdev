@@ -1,0 +1,205 @@
+<div>
+  <h1>Welcome! Eluly!</h1>
+  <% include ../partials/header %>
+  <% include ../partials/aside %>
+</div>
+<div id="content">
+  <div>
+    <div>
+      <div>
+        <label for="">제목</label>
+        <input type="text" name="title" id="title">
+      </div>
+      <div>
+        <label for="">이름</label>
+        <span><%= locals.isAuthenticate.userName %></span>
+      </div>
+      <div>
+        <label for="">기간</label>
+        <input type="text" name="term" id="term">
+      </div>
+      <div>
+        <label for="">금액</label>
+        <input type="text" name="price" id="price">
+      </div>
+      <div>
+        <div id="actions">
+          <div>
+            <span class="btn btn-success fileinput-button dz-clickable">
+              <span>Add File</span>
+            </span>
+          </div>
+        </div>
+        <div>
+          <span class="fileupload-process">
+            <div id="total-progress" class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+            </div>
+          </span>
+        </div>
+        <div class="table table-striped" class="files" id="previews">
+          <div id="template" class="file-row">
+            <!-- This is used as the file preview template -->
+            <div>
+                <span class="preview"><img data-dz-thumbnail /></span>
+            </div>
+            <div>
+                <p class="name" data-dz-name></p>
+                <strong class="error text-danger" data-dz-errormessage></strong>
+            </div>
+            <div>
+                <p class="size" data-dz-size></p>
+                <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                  <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+                </div>
+            </div>
+            <div>
+              <button data-dz-remove class="btn btn-warning cancel">
+                  <i class="glyphicon glyphicon-ban-circle"></i>
+                  <span>Cancel</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <link rel="stylesheet" href="/js/quill/quill.snow.css">
+        <div name="content" id="editor"></div>
+        <script src="/js/quill/quill.min.js"></script>
+        <script>
+          const toolbarOpt = [
+            ['bold', 'italic', 'underline', 'strike'],
+            ['blockquote', 'code-block'],
+            ['image']
+          ];
+
+          const editor = new Quill('#editor', {
+            theme: 'snow',
+            modules: {
+              toolbar: toolbarOpt
+            }
+          });
+
+          editor.getModule('toolbar').addHandler('image', function() {
+            imgUpload();
+          });
+
+          const imgUpload = () => {
+            const input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('name', 'files');
+            input.setAttribute('id', 'imgUp');
+            input.setAttribute('multiple', '');
+            input.click();
+
+            input.onchange = () => {
+              const files = input.files;
+              const data = new FormData();
+
+              for(let id in files) {
+                data.append('files', files[id]);
+              };
+              $.ajax({
+                url: '/api/customerContent/contentImg',
+                type: 'post',
+                enctype: 'multipart/form-data',
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                  console.log(data)
+                  const range = editor.getSelection();
+                  console.log(range)
+                  for(let id in data) {
+                    editor.insertEmbed(range.index, 'image', 'http://localhost:3000' + data[id]);
+                  };
+                }
+              });
+            };
+          };
+        </script>
+      </div>
+    </div>
+    <div>
+      <button id="confirm">저장</button>
+    </div> 
+  </div>
+</div>
+<script src="/js/dropzone/dist/dropzone.js"></script>
+  <link rel="stylesheet" href="/css/dz.css">
+  <script>
+    // Get the template HTML and remove it from the doumenthe template HTML and remove it from the doument
+  const previewNode = document.querySelector("#template");
+  previewNode.id = "";
+  const previewTemplate = previewNode.parentNode.innerHTML;
+  previewNode.parentNode.removeChild(previewNode);
+  
+  const myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
+    url: '/api/customerContent/add', // Set the url
+    method: 'post',
+    paramName: function() { return 'files'; },
+    thumbnailWidth: 80,
+    thumbnailHeight: 80,
+    previewTemplate: previewTemplate,
+    autoProcessQueue: false,
+    previewsContainer: "#previews", // Define the container to display the previews
+    clickable: ".fileinput-button", // Define the element that should be used as click trigger to select files.
+    parallelUploads: 5,
+    maxFiles: 5,
+    maxFilesize: 5,
+    uploadMultiple: true
+  });
+  
+  // Update the total progress bar
+  myDropzone.on("totaluploadprogress", function(progress) {
+    document.querySelector("#total-progress .progress-bar").style.width = progress + "%";
+  });
+  
+  myDropzone.on("sending", function(file) {
+    // Show the total progress bar when upload starts
+    document.querySelector("#total-progress").style.opacity = "1";
+  });
+  
+  // Hide the total progress bar when nothing's uploading anymore
+  myDropzone.on("queuecomplete", function(progress) {
+    document.querySelector("#total-progress").style.opacity = "0";
+    document.location.href = '/api/customerContent';
+  });
+  
+  $('#confirm').click(function(e) {
+    // e.preventDefault();
+    if(myDropzone.files.length === 0) {
+      $.ajax({
+        url: '/api/customerContent/add',
+        method: 'post',
+        data: {
+          title: $('#title').val(),
+          term: $('#term').val(),
+          price: $('#price').val(),
+          content: $('#editor > .ql-editor').html()
+        },
+        success: function() {
+          console.log('1')
+          console.log('success')
+          document.location.href = '/api/customerContent';
+        }
+      });
+    } else {
+      myDropzone.options.params = {
+        title: $('#title').val(),
+        term: $('#term').val(),
+        price: $('#price').val(),
+        content: $('#editor > .ql-editor').html()
+      };
+      myDropzone.processQueue();
+    };
+  });
+  
+  let cancel = $('.cancel');
+
+  for(let i = 0; i < cancel.length; i ++) {
+    cancel[i].click(function(e) {
+      myDropzone.removeAllFiles(true);
+    })
+  }
+  </script>

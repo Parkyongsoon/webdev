@@ -1,0 +1,87 @@
+<div>
+  <h1>Welcome! Eluly!</h1>
+  <% include ../partials/header %>
+  <% include ../partials/aside %>
+</div>
+<div id="content">
+  <div>
+    <form action="/admin/api/progress/<%= isAuthenticate.clientId %>" method="post">
+      <select name="searchType" id="">
+        <option value="title" <%= searchType==="title"?select="selected":"" %>>제목</option>
+        <option value="content"<%= searchType==="content"?select="selected":"" %>>내용</option>
+        <option value="nickname"<%= searchType==="nickname"?select="selected":"" %>>개발자</option>
+        <option value="title_content"<%= searchType==="title_content"?select="selected":"" %>>제목 + 내용</option>
+      </select>
+      <input type="text" name="search" id="search">
+      <button type="submit" value="Search">검색</button>
+    </form>
+  </div>
+  <% if(!hits) { %>
+  <div>
+    <table>
+      <thead>
+        <tr>
+          <th>번호</th>
+          <th>제목</th>
+          <th>이름</th>
+          <th>작성일</th>
+          <th>지원자 수</th>
+          <th>확정자</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if(!progress || progress.length === 0) { %>
+          <tr>
+            <td colspan="6" style="text-align: center">게시글 없다</td>
+          </tr>
+        <% } else { %>
+          <% progress.forEach(function(p) { %>
+            <tr>
+              <td><%= p.id %></td>
+              <td><a href="/admin/api/progress/view/<%=p.id%>"><%= p.title%></a></td>
+              <td><%= p.name %></td>
+              <td><%= locals.moment(p.createdAt).format('YYYY/MM/DD HH:mm') %></td>
+              <% if(p.apply === null || p.apply.length === 0) { %>
+                <td>0</td>
+              <% } else { %>
+                <td><%= p.apply.length %></td>
+              <% } %>
+              <% if(p.action === false) { %>
+                <td>빨리 결정해!</td>
+              <% } else { %>
+                <td><%= choiceDesigner.name %></td>
+              <% } %>
+            </tr>
+          <% }) %>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+  <% } else { %>
+    <div>
+        <table>
+          <thead>
+            <tr>
+              <th>번호</th>
+              <th>제목</th>
+              <th>이름</th>
+              <th>작성일</th>
+              <th>지원자 수</th>
+              <th>상태</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% hits.forEach(function(h) { %>
+                <tr>
+                  <td><%= h._source.id %></td>
+                  <td><a href="/admin/api/progress/view/<%=h._source.id%>"><%= h._source.title%></a></td>
+                  <td><%= h._source.name %></td>
+                  <td><%= locals.moment(h._source.createdat).format('YYYY/MM/DD HH:mm') %></td>
+                  <td></td>
+                </tr>
+              <% }) %>
+          </tbody>
+        </table>
+    </div>
+  <% } %>
+</div>

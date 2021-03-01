@@ -1,0 +1,40 @@
+<div>
+  <% if(locals.isAuthenticate === undefined) { %>
+  <div>
+    <span><a href="/api/auth/login">로그인</a></span>
+  </div>
+  <div>
+    <span><a href="/api/auth/register">회원가입</a></span>
+  </div>
+  <% } else { %>
+    <div>
+      <div>
+        <p><%= locals.isAuthenticate.userName %>님 어서옵쇼</p>
+      </div>
+      <div>
+        <p><a class="dropdown-item" href="/api/myPage/<%= locals.isAuthenticate.userId %>">마이페이지</a></p>
+      </div>
+      <div>
+        <% if(isAuthenticate.provider === 'kakao') { %>
+        <form action="/api/auth/kakaoLogout" method="post">
+          <div>
+            <button type="submit">kakao_LogOut</button>
+          </div>
+        </form>
+        <% } else if(isAuthenticate.provider === 'naver') { %>
+          <form action="/api/auth/naverLogout" method="post">
+            <div>
+              <button type="submit">naver_LogOut</button>
+            </div>
+          </form>
+        <% } else { %>
+          <form action="/api/auth/logout" method="post">
+            <div>
+              <button type="submit">local_LogOut</button>
+            </div>
+          </form>
+        <% } %>
+      </div>
+    </div>
+  <% } %>
+</div>

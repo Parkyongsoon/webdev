@@ -1,0 +1,47 @@
+<div>
+  <div id="content">
+    <div>
+      <div>
+        <div>
+          <span><a href="/api/customerContent/edit/<%= customerContentView.id %>" class="btn btn-info sm">글 수정</a></span>
+        </div>
+        <div>
+          <form action="/api/customerContent/delete/<%= customerContentView.id %>?_method=delete" method="post">
+            <button type="submit" class="btn btn-danger sm" onclick="return confirm('삭제하시겠습니까?')">글 삭제</button>
+            <input type="hidden" name="contentId" value="<%= customerContentView.id %>">
+          </form>
+        </div>
+        <div>
+          <label for="">제목</label>
+          <span><%= customerContentView.title %></span>
+        </div>
+        <div>
+          <label for="">이름</label>
+          <span><%= customerContentView.name %></span>
+        </div>
+        <div>
+          <label for="">기간</label>
+          <span><%= customerContentView.term %></span>
+        </div>
+        <div>
+          <label for="">금액</label>
+          <span><%= customerContentView.price %></span>
+        </div>
+        <div>
+          <label for="">file : </label>
+          <% if(!customerContentView.files) { %>
+            <span>파일이 없습니다</span>
+          <% } else { %>
+            <% for(let i = 0; i < customerContentView.files.length; i ++) { %>
+              <span><a href="/board/<%= customerContentView.id %>/download/<%= customerContentView.files[i] %>"><%= customerContentView.files[i] %></a></span>
+            <% } %>
+          <% } %>
+        </div>
+        <div>
+          <label for="">내용</label>
+          <span><%- customerContentView.content %></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,81 @@
+<div>
+  <h1>Welcome! Eluly!</h1>
+  <% include ../partials/header %>
+  <% include ../partials/aside %>
+</div>
+<div>
+  <div id="content">
+    <div>
+      <form action="/api/designerProfile/search" method="get">
+        <select name="searchType" id="">
+          <option value="name"<%= searchType==="name"?select="selected":"" %>>이름</option>
+          <option value="major"<%= searchType==="major"?select="selected":"" %>>종목</option>
+        </select>
+        <input type="hidden" name="role" value="designer">
+        <input type="text" name="search" id="search">
+        <button type="submit" value="Search">검색</button>
+      </form>
+    </div>
+    <% if(!hits) { %>
+    <div>
+    <% if(!list || list.length === 0) { %>
+        <span>개발자 구함다~</sapn>
+    <% } else { %>
+      <% list.forEach(function(l) { %>
+        <div class="card" style="width: 18rem;">
+          <div id="profileBox">
+            <img id="profile" src="/uploads/profileImg/<%= l.profileImg %>" class="card-img-top">
+          </div>
+          <div class="card-body">
+            <h5 class="card-id"><%= l.id %></h5>
+            <div>
+              <label for="">종목 : </label>
+              <span><%= l.major %></span>
+            </div>
+            <div>
+              <label for="">이름 : </label>
+              <span class="card-name"><a href="/api/designerProfile/<%=l.id%>"><%= l.name %></a></span>
+            </div>
+            <div>
+              <label for="">등록일</label>
+              <span><%= locals.moment(l.createdAt).format('YYYY/MM/DD HH:mm') %></span>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+    </div>
+    <% } else { %>
+      <div>
+        <% if (hits.length === 0) { %>
+          <div>
+            <span>그런 놈 없음.</span>
+          </div>
+        <% } else { %>
+          <% hits.forEach(function(h) { %>
+            <div class="card" style="width: 18rem;">
+              <div id="profileBox">
+                <img id="profile" src="/uploads/profileImg/<%= h._source.profileimg %>" class="card-img-top">
+              </div>
+              <div class="card-body">
+                <h5 class="card-id"><%= h._source.id %></h5>
+                <div>
+                  <label for="">종목 : </label>
+                  <span><%= h._source.major %></span>
+                </div>
+                <div>
+                  <label for="">이름 : </label>
+                  <span class="card-name"><a href="/api/designerProfile/<%=h._source.id%>"><%= h._source.name %></a></span>
+                </div>
+                <div>
+                  <label for="">등록일 : </label>
+                  <span><%= locals.moment(h._source.createdAt).format('YYYY/MM/DD HH:mm') %></span>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        <% } %>
+      </div>
+    <% } %>
+  </div>
+</div>

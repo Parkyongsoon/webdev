@@ -1,0 +1,111 @@
+<div>
+  <h1>Welcome! Eluly!</h1>
+  <% include ../../partials/header %>
+  <% include ../../partials/myPageAside %>
+</div>
+<br>
+<div id="content">
+  <div>
+    <div>
+      <div>
+        <span><a href="/myPage/myIdea/<%= isAuthenticate.clientId %>/edit/<%= myIdeaView.id %>" class="btn btn-info sm">글 수정</a></span>
+      </div>
+      <div>
+        <form action="/myPage/myIdea/<%= isAuthenticate.clientId %>/<%= myIdeaView.id %>?_method=delete" method="post">
+          <button type="submit" class="btn btn-danger sm" onclick="return confirm('삭제하시겠습니까?')">글 삭제</button>
+          <input type="hidden" name="myIdeaId" value="<%= myIdeaView.id %>">
+        </form>
+      </div>
+      <div>
+        <label for="">제목 : </label>
+        <span id="title"><%= myIdeaView.title %></span>
+      </div>
+      <div>
+        <label for="">작성자 : </label>
+        <span id="name"><%= myIdeaView.name %></span>
+      </div>
+      <div>
+        <label for="">기간 : </label>
+        <span id="term"><%= myIdeaView.term %></span>
+      </div>
+      <div>
+        <label for="">금액 : </label>
+        <span id="price"><%= myIdeaView.price %></span>
+      </div>
+      <div>
+        <label for="">파일 : </label>
+        <% if(!myIdeaView.files) { %>
+          <span>파일이 없습니다</span>
+        <% } else { %>
+          <% for(let i = 0; i < myIdeaView.files.length; i ++) { %>
+            <span><a href="/myPage/myIdea/<%= locals.isAuthenticate.userId %>/<%= myIdeaView.id %>/download/<%= myIdeaView.files[i] %>"><%= myIdeaView.files[i] %></a></span>
+          <% } %>
+        <% } %>
+      </div>
+      <div>
+        <label for="">내용 : </label>
+        <span><%- myIdeaView.content %></span>
+      </div>
+    </div>
+    <div>
+      <% if(!myIdeaView.apply || myIdeaView.apply.length === 0) { %>
+        <div>
+          <span>지원자가 없습니다.</span>
+        </div>
+      <% } else { %>
+        <% list.forEach(function(l, i) { %>
+          <div>
+            <span class="designerProfile<%= i %>"><%= l.username %></span>
+              <% if(myIdeaView.action === true) { %>
+                <button id="choice<%= i %>" class="btn btn-info sm" disabled>Choice</button>
+              <% } else { %>
+                <button id="choice<%= i %>" class="btn btn-info sm" >Choice</button>
+                <script>
+                  $('#choice<%= i %>').click(function(e) {
+                    let choice = confirm('이 사람 정말 선택?');
+                    if(choice) {
+                      let gogo = confirm('결제 ㄱㄱ?!');
+
+                      if(gogo) {
+                        $.ajax({
+                          url: '/api/myPage/myIdea/choice/<%= locals.isAuthenticate.userId %>/<%= myIdeaView.id %>/<%= l.id %>',
+                          method: 'post',
+                          data: {
+                            title: $('#title').text(),
+                            name: $('#name').text(),
+                            term: $('#term').text(),
+                            price: $('#price').text(),
+                            designerName: '<%= l.name %>',
+                            action: true,
+                          },
+                          success: function() {
+                            document.location.href = 'http://localhost:3000/api/customerPayment/<%= locals.isAuthenticate.userId %>';
+                          }
+                        });
+                      } else {
+                        $.ajax({
+                          url: '/api/myPage/myIdea/choice/<%= locals.isAuthenticate.userId %>/<%= myIdeaView.id %>/<%= l.id %>',
+                          method: 'post',
+                          data: {
+                            title: $('#title').text(),
+                            name: $('#name').text(),
+                            term: $('#term').text(),
+                            price: $('#price').text(),
+                            designerName: '<%= l.name %>',
+                            action: true,
+                          },
+                          success: function() {
+                            document.location.href = 'http://localhost:3000/api/myPage/myPayment/pending/<%= locals.isAuthenticate.userId %>';
+                          }
+                        });
+                      };
+                    };
+                  });
+                </script>
+              <% } %>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </div>
+</div>

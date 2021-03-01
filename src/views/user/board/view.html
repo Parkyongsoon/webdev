@@ -1,0 +1,47 @@
+<div>
+  <div id="content">
+    <div>
+      <div>
+        <div>
+          <span><a href="/api/board/edit/<%= boardView.id %>" class="btn btn-info sm">글 수정</a></span>
+        </div>
+        <div>
+          <form action="/api/board/delete/<%= boardView.id %>?_method=delete" method="post">
+            <button type="submit" class="btn btn-danger sm" onclick="return confirm('삭제하시겠습니까?')">글 삭제</button>
+            <input type="hidden" name="contentId" value="<%= boardView.id %>">
+          </form>
+        </div>
+        <div>
+          <label for="">제목</label>
+          <span><%= boardView.title %></span>
+        </div>
+        <div>
+          <label for="">이름</label>
+          <span><%= boardView.name %></span>
+        </div>
+        <div>
+          <label for="">기간</label>
+          <span><%= boardView.term %></span>
+        </div>
+        <div>
+          <label for="">금액</label>
+          <span><%= boardView.price %></span>
+        </div>
+        <div>
+          <label for="">file : </label>
+          <% if(!boardView.files) { %>
+            <span>파일이 없습니다</span>
+          <% } else { %>
+            <% for(let i = 0; i < boardView.files.length; i ++) { %>
+              <span><a href="/api/board/<%= boardView.id %>/download/<%= boardView.files[i] %>"><%= boardView.files[i] %></a></span>
+            <% } %>
+          <% } %>
+        </div>
+        <div>
+          <label for="">내용</label>
+          <span><%- boardView.content %></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

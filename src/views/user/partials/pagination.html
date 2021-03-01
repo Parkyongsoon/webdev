@@ -1,0 +1,55 @@
+<ul class="pagination pagination-sm">
+  <% if (pageNum > perPage) { %>
+    <li class="page-item">
+      <a href="/<%= pageUrl %>1" class="page-link">
+        <span sytle="display: block"> << </span>
+      </a>
+    </li>
+    &nbsp
+    <li class="page-item">
+      <a href="/<%= pageUrl %><%= pageStart - 1 %>" class="page-link">
+        <span sytle="display: block"> < </span>
+      </a>
+    </li>
+  <% } else { %>
+    <li class="page-item">
+      <span style="display: none"> << </span>
+    </li>
+    &nbsp
+    <li class="page-item">
+      <span style="display: none"> < </span>
+    </li>
+  <% } %>
+  <% for(let i = pageStart; i <= pageEnd; i++) { %>
+    <% if(i === pageNum) { %>
+      <li class=" page-item active">
+        <a href="/<%= pageUrl %><%= i %>" class="page-link" style="color: red"><%= i %></a>
+      </li>
+    <% } else { %>
+    <li class=" page-item">
+      <a href="/<%= pageUrl %><%= i %>" class="page-link"><%= i %></a>
+    </li>
+    <% } %>
+  <% } %>
+  <% if (pageEnd < pageTotal) { %>
+    <li class="page-item">
+      <a href="/<%= pageUrl %><%=pageEnd + 1 %>" class="page-link">
+        <span style="display: block"> > </span>
+      </a>
+    </li>
+    &nbsp
+    <li class="page-item">
+      <a href="/<%= pageUrl %><%=pageTotal %>" class="page-link">
+        <span style="display: block"> >> </span>
+      </a>
+    </li>
+  <% } else { %>
+    <li class="page-item">
+      <span style="display: none"> > </span>
+    </li>
+    &nbsp
+    <li class="page-item">
+      <span style="display: none"> >> </span>
+    </li>
+  <% } %>
+</ul>

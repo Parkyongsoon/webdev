@@ -1,0 +1,47 @@
+<div>
+  <div id="content">
+    <div>
+      <div>
+        <div>
+          <span><a href="/admin/api/popup/edit/<%= view.id %>" class="btn btn-info sm">글 수정</a></span>
+        </div>
+        <div>
+          <form action="/admin/api/popup/delete/<%= view.id %>?_method=delete" method="post">
+            <button type="submit" class="btn btn-danger sm" onclick="return confirm('삭제하시겠습니까?')">글 삭제</button>
+            <input type="hidden" name="contentId" value="<%= view.id %>">
+          </form>
+        </div>
+        <div>
+          <label for="">제목</label>
+          <span><%= view.title %></span>
+        </div>
+        <div>
+          <label for="">이름</label>
+          <span><%= view.name %></span>
+        </div>
+        <div>
+          <label for="">가로</label>
+          <span><%= view.width %></span>
+        </div>
+        <div>
+          <label for="">세로</label>
+          <span><%= view.height %></span>
+        </div>
+        <div>
+          <label for="">file : </label>
+          <% if(!view.files) { %>
+            <span>파일이 없습니다</span>
+          <% } else { %>
+            <% for(let i = 0; i < view.files.length; i ++) { %>
+              <span><a href="/admin/api/popup/<%= view.id %>/download/<%= view.files[i] %>"><%= view.files[i] %></a></span>
+            <% } %>
+          <% } %>
+        </div>
+        <div>
+          <label for="">비고</label>
+          <span><%- view.comment %></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

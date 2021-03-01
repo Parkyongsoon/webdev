@@ -1,0 +1,13 @@
+<div>
+  <h1>Welcome! Eluly!</h1>
+  <% include ../../partials/header %>
+  <% include ../../partials/myPageAside %>
+</div>
+<br>
+<div>
+  <form action="/api/myPage/memberDelete/<%= locals.isAuthenticate.userId %>?_method=delete" method="post">
+    <h1>회원탈퇴</h1>
+    <p>정말 탈퇴?</p>
+    <button type="submit" onclick="return confirm('되돌릴수 없어');">응 탈퇴!</button>
+  </form>
+</div>

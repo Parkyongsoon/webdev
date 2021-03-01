@@ -1,0 +1,18 @@
+<div>
+  <h1>Welcome! Eluly!</h1>
+  <% include ../../partials/header %>
+  <% include ../../partials/myPageAside %>
+</div>
+<br>
+<div>
+  <div>
+    <% if(errorMsg) { %>
+      <div class="alert alert-danger"><%= errorMsg %></div>
+    <% } %>
+  </div>
+  <form action="/api/myPage/memberDelete/auth/<%= locals.isAuthenticate.userId %>" method="post">
+    <label for="">비밀번호 확인</label>
+    <input type="password" name="password" id="password">
+    <button type="submit">확인</button>
+  </form>
+</div>

@@ -1,0 +1,27 @@
+<div>
+  <h1>Welcome! Eluly!</h1>
+  <% include ../partials/header %>
+  <% include ../partials/aside %>
+</div>
+<div>
+  <div>
+    <% if(errorMsg) { %>
+      <div class="alert alert-danger"><%= errorMsg %></div>
+    <% } %>
+  </div>
+  <form action="/api/auth/findId" method="post">
+    <div>
+      <div>
+        <label for="">이름</label>
+        <input type="text" name="name" id="name">
+      </div>
+      <div>
+        <label for="">이메일</label>
+        <input type="text" name="email" id="email">
+      </div>
+    </div>
+    <div>
+      <button type="submit">찾기</button>
+    </div>
+  </form>
+</div>

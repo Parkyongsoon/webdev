@@ -1,0 +1,51 @@
+<div>
+  <h1>Welcome! Eluly!</h1>
+  <% include ../../partials/header %>
+  <% include ../../partials/myPageAside %>
+</div>
+<br>
+<div id="content">
+  <div>
+    <div>
+      <div>
+        <span><a href="/myPage/myQnA/edit/<%= locals.isAuthenticate.userId %>/<%= myQnaView.id %>" class="btn btn-info sm">글 수정</a></span>
+      </div>
+      <div>
+        <form action="/myPage/myQnA/delete/<%= locals.isAuthenticate.userId %>/<%= myQnaView.id %>?_method=delete" method="post">
+          <button type="submit" class="btn btn-danger sm" onclick="return confirm('삭제하시겠습니까?')">글 삭제</button>
+        </form>
+      </div>
+      <div>
+        <div>
+          <label for="">제목</label>
+          <span><%= myQnaView.title %></span>
+        </div>
+        <div>
+          <label for="">작성자</label>
+          <span><%= myQnaView.name %></span>
+        </div>
+        <div>
+          <label for="">내용</label>
+          <span><%- myQnaView.content %></span>
+        </div>
+      </div>
+      <div>
+        <div>
+          <h4>Answer</h4>
+        </div>
+        <div style="border: 1px solid black;"></div>
+        <div>
+          <% if (myQnaComment === null || myQnaComment.length === 0) { %>
+            <h5>답변이 없습니다.</h5>
+          <% } else { %>
+            <% myQnaComment.forEach(function(qc) { %>
+              <div class="qnaCommentBody<%= qc.id %>">
+                <span style="font-weight: bold;"><%= qc.name %>:</span> <%= qc.content %> - <%= locals.moment(qc.createdAt).format('YYYY/MM/DD HH:mm') %>
+              </div>
+            <% }) %>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

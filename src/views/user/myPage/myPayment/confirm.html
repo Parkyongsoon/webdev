@@ -1,0 +1,80 @@
+<div>
+  <h1>Welcome! Eluly!</h1>
+  <% include ../../partials/header %>
+  <% include ../../partials/myPageAside %>
+</div>
+<br>
+<div id="content">
+  <div>
+    <form action="/myPage/myPayment/<%= isAuthenticate.clientId %>" method="post">
+      <select name="searchType" id="">
+        <option value="title" <%= searchType==="title"?select="selected":"" %>>제목</option>
+        <option value="content"<%= searchType==="content"?select="selected":"" %>>내용</option>
+        <option value="nickname"<%= searchType==="nickname"?select="selected":"" %>>개발자</option>
+        <option value="title_content"<%= searchType==="title_content"?select="selected":"" %>>제목 + 내용</option>
+      </select>
+      <input type="text" name="search" id="search">
+      <button type="submit" value="Search">검색</button>
+    </form>
+  </div>
+  <% if(!hits) { %>
+  <div>
+    <table>
+      <thead>
+        <tr>
+          <th>번호</th>
+          <th>제목</th>
+          <th>이름</th>
+          <th>작성일</th>
+          <th>확정자</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if(!myPayment || myPayment.length === 0) { %>
+          <tr>
+            <td colspan="6" style="text-align: center">결제 내역 없다</td>
+          </tr>
+        <% } else { %>
+          <% myPayment.forEach(function(m) { %>
+            <tr>
+              <td><%= m.id %></td>
+              <td><a href="/api/myPage/myPayment/confirm/<%= locals.isAuthenticate.userId %>/<%=m.id%>"><%= m.title%></a></td>
+              <td><%= m.name %></td>
+              <td><%= locals.moment(m.createdAt).format('YYYY/MM/DD HH:mm') %></td>
+              <td><%= m.designerName %></td>
+              <% if(m.payment === true) { %>
+                <td>결제완료</td>
+              <% } %>
+            </tr>
+          <% }) %>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+  <% } else { %>
+    <div>
+        <table>
+          <thead>
+            <tr>
+              <th>번호</th>
+              <th>제목</th>
+              <th>이름</th>
+              <th>작성일</th>
+              <th>확정자</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% hits.forEach(function(h) { %>
+                <tr>
+                  <td><%= h._source.id %></td>
+                  <td><a href="/myPage/myPayment/confirm/<%= locals.isAuthenticate.userId %>/<%=h._source.id%>"><%= h._source.title%></a></td>
+                  <td><%= h._source.nickname %></td>
+                  <td><%= moment(h._source.createdat).format('YYYY/MM/DD HH:mm') %></td>
+                  <td></td>
+                </tr>
+              <% }) %>
+          </tbody>
+        </table>
+    </div>
+  <% } %>
+</div>

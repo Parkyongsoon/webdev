@@ -1,0 +1,129 @@
+<div>
+  <h1>Welcome! Eluly!</h1>
+  <% include ../../partials/header %>
+  <% include ../../partials/myPageAside %>
+</div>
+<div>
+  <div id="errorMsg"></div>
+</div>
+<div>
+  <h4>실명인증</h4>
+  <div>
+    <input type="text" name="phone" id="phone" placeholder="핸드폰 번호 입력">
+    <button id="submit">전송</button>
+  </div>
+  <div id="authNumberInput">
+  </div>
+</div>
+<script>
+  $('#submit').click(function(e) {
+    axios({
+      url: 'http://localhost:3000/api/myPage/nameAuth/<%= locals.isAuthenticate.userId %>',
+      method: 'post',
+      data: {
+        phone: $('#phone').val()
+      }
+    }).then(result => {
+      if(result.data.trueOrFalse === false) {
+
+        $('#errorMsg').empty();
+        $('#errorMsg').append(result.data.errorMsg);
+
+      } else {
+        $('#errorMsg').empty();
+        $('#authNumberInput').empty();
+        const authNumberInput = document.getElementById('authNumberInput');
+
+        const input = document.createElement('input');
+        input.setAttribute('type', 'text');
+        input.setAttribute('name', 'authNumber');
+        input.setAttribute('id', 'authNumber');
+        input.setAttribute('placeholder', '전송된 번호를 입력');
+
+        const sendBtn = document.createElement('button');
+        sendBtn.setAttribute('id', 'send');
+        sendBtn.innerHTML = '전송';
+
+        const span = document.createElement('span');
+        span.setAttribute('id', 'timer');
+
+        // timer(5분)
+        let time = 300;
+        let min = '';
+        let sec = '';
+
+        // setTimeout(timer);
+        
+        // function timer() {
+
+        //   min = parseInt(time/60, 10);
+        //   sec = parseInt(time%60, 10);
+
+        //   min = min < 10 ? '0' + min : min;
+        //   sec = sec < 10 ? '0' + sec : sec;
+
+        //   time--;
+
+        //   if(time > 0) {
+        //     setTimeout(timer,1000);
+        //     document.getElementById('timer').innerHTML = min + ':' + sec;
+        //   } else {
+        //     clearTimeout(timer);
+        //     document.getElementById('send').disabled = true;
+        //   };
+        // };
+        
+        const timer = setInterval(() => {
+          min = parseInt(time/60);
+          sec = time%60;
+
+          document.getElementById('timer').innerHTML = min + ':' + sec;
+
+          time--;
+
+          if(time < 0) {
+            clearInterval(timer);
+            document.getElementById('send').disabled = true;
+          }
+        }, 1000);
+
+        authNumberInput.appendChild(input);
+        authNumberInput.appendChild(sendBtn);
+        authNumberInput.appendChild(span);
+
+        $('#send').click(function(e) {
+          console.log($('#authNumber').val())
+          axios({
+            url: 'http://localhost:3000/api/myPage/nameAuth/confirm/<%= locals.isAuthenticate.userId %>',
+            method: 'post',
+            data: {
+              authNumber: $('#authNumber').val()
+            }
+          }).then(result => {
+            if(result.data.trueOrFalse === false) {
+
+              $('#errorMsg').empty();
+              $('#errorMsg').append(result.data.errorMsg);
+
+            } else {
+              console.log('2')
+              // const authNumberInput = document.getElementById('authNumberInput');
+              // const input = document.createElement('input');
+              // input.setAttribute('type', 'text');
+              // input.setAttribute('name', 'authNumber');
+              // input.setAttribute('id', 'authNumber');
+              // input.setAttribute('placeholder', '전송된 번호를 입력');
+      
+              // const sendBtn = document.createElement('button');
+              // sendBtn.setAttribute('id', 'send');
+              // sendBtn.innerHTML = '전송';
+              // // input.appendChild(sendBtn);
+              // authNumberInput.appendChild(input);
+              // authNumberInput.appendChild(sendBtn);
+            }
+          })
+        })
+      }
+    });
+  });
+</script>

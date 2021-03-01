@@ -1,0 +1,109 @@
+<div>
+  <h1>Welcome! Eluly!</h1>
+  <% include ../partials/header %>
+  <% include ../partials/aside %>
+</div>
+<div id="content">
+  <div>
+    <a href="/api/customerContent/add">add</a>
+  </div>
+  <div>
+    <form action="/api/customerContent/search" method="get">
+      <select name="searchType" id="">
+        <option value="title" <%= searchType==="title"?select="selected":"" %>>제목</option>
+        <option value="content"<%= searchType==="content"?select="selected":"" %>>내용</option>
+        <option value="name"<%= searchType==="name"?select="selected":"" %>>개발자</option>
+        <option value="title_content"<%= searchType==="title_content"?select="selected":"" %>>제목 + 내용</option>
+      </select>
+      <input type="text" name="search" id="search">
+      <button type="submit" value="Search">검색</button>
+    </form>
+  </div>
+  <% if(!hits) { %>
+  <div>
+    <table>
+      <thead>
+        <tr>
+          <th>번호</th>
+          <th>제목</th>
+          <th>이름</th>
+          <th>작성일</th>
+          <th>신청자</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if(!list || list.length === 0) { %>
+          <tr>
+            <td colspan="6" style="text-align: center">게시글 없다</td>
+          </tr>
+        <% } else { %>
+          <% list.forEach(function(l) { %>
+            <tr>
+              <td><%= l.id %></td>
+              <td><a href="/api/customerContent/<%=l.id%>"><%= l.title%></a></td>
+              <td><%= l.name %></td>
+              <td><%= locals.moment(l.createdAt).format('YYYY/MM/DD HH:mm') %></td>
+              <% if(l.apply === null || l.apply.length === 0) { %>
+                <td>0</td>
+              <% } else { %>
+                <td><%= l.apply.length %></td>
+              <% } %>
+              <% if(l.action === true) { %>
+                <td>매칭완료</td>
+              <% } else { %>
+                <td><%= l.action %></td>
+              <% } %>
+            </tr>
+          <% }) %>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <% include ../partials/pagination %>
+  </div>
+  <% } else { %>
+    <div>
+        <table>
+          <thead>
+            <tr>
+              <th>번호</th>
+              <th>제목</th>
+              <th>이름</th>
+              <th>작성일</th>
+              <th>신청자</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (hits.length === 0) { %>
+              <tr>
+                <td>해당 게시물이 없습니다.</td>
+              </tr>
+            <% } else { %>
+              <% hits.forEach(function(h) { %>
+                <tr>
+                  <td><%= h._source.id %></td>
+                  <td><a href="/api/customerContent/<%=h._source.id%>"><%= h._source.title%></a></td>
+                  <td><%= h._source.name %></td>
+                  <td><%= locals.moment(h._source.createdAt).format('YYYY/MM/DD HH:mm') %></td>
+                  <% if(h._source.apply === null || h._source.apply.length === 0) { %>
+                    <td>0</td>
+                  <% } else { %>
+                    <td><%= h._source.apply.length %></td>
+                  <% } %>
+                  <% if(h._source.action === true) { %>
+                    <td>매칭완료</td>
+                  <% } else { %>
+                    <td><%= h._source.action %></td>
+                  <% } %>
+                </tr>
+              <% }) %>
+            <% } %>  
+          </tbody>
+        </table>
+    </div>
+    <div>
+      <% include ../partials/pagination %>
+    </div>
+  <% } %>
+</div>

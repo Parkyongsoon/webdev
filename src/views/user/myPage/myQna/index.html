@@ -1,0 +1,97 @@
+<div>
+  <h1>Welcome! Eluly!</h1>
+  <% include ../../partials/header %>
+  <% include ../../partials/myPageAside %>
+</div>
+<br>
+<div id="content">
+  <div>
+    <form action="/api/myPage/myQna/search/<%= locals.isAuthenticate.userId %>" method="get">
+      <select name="searchType" id="">
+        <option value="title" <%= searchType==="title"?select="selected":"" %>>제목</option>
+        <option value="content"<%= searchType==="content"?select="selected":"" %>>내용</option>
+        <option value="title_content"<%= searchType==="title_content"?select="selected":"" %>>제목 + 내용</option>
+      </select>
+      <input type="text" name="search" id="search">
+      <!-- <input type="hidden" name="userId" value="<%= locals.isAuthenticate.userId %>"> -->
+      <button type="submit" value="Search">검색</button>
+    </form>
+  </div>
+  <% if(!hits) { %>
+  <div>
+    <table>
+      <thead>
+        <tr>
+          <th>번호</th>
+          <th>제목</th>
+          <th>이름</th>
+          <th>작성일</th>
+          <th>답변</th>                
+        </tr>
+      </thead>
+      <tbody>
+        <% if(!list || list.length === 0) { %>
+          <tr>
+            <td colspan="6" style="text-align: center">게시글 없다</td>
+          </tr>
+        <% } else { %>
+          <% list.forEach(function(l) { %>
+            <tr>
+              <td><%= l.id %></td>
+              <td><a href="/api/myPage/myQna/<%= locals.isAuthenticate.userId %>/<%=l.id%>"><%= l.title%></a></td>
+              <td><%= l.name %></td>
+              <td><%= locals.moment(l.createdAt).format('YYYY/MM/DD HH:mm') %></td>
+              <% if(l.answer === false) { %>
+                <td>대기</td>
+              <% } else { %>
+                <td>답변</td>
+              <% } %>
+            </tr>
+          <% }) %>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <% include ../../partials/pagination %>
+  </div>
+  <% } else { %>
+    <div>
+        <table>
+          <thead>
+            <tr>
+              <th>번호</th>
+              <th>제목</th>
+              <th>이름</th>
+              <th>작성일</th>
+              <th>답변</th> 
+            </tr>
+          </thead>
+          <tbody>
+            <% if (hits.length === 0) { %>
+              <tr>
+                <td>해당 게시물이 없습니다.</td>
+              </tr>
+            <% } else { %>
+              <% hits.forEach(function(h) { %>
+                <tr>
+                  <td><%= h._source.id %></td>
+                  <td><a href="/api/myPage/myQna/<%= isAuthenticate.userId %>/<%=h._source.id%>"><%= h._source.title%></a></td>
+                  <td><%= h._source.name %></td>
+                  <td><%= locals.moment(h._source.createdAt).format('YYYY/MM/DD HH:mm') %></td>
+                  <% if(h._source.answer === false) { %>
+                    <td>대기</td>
+                  <% } else { %>
+                    <td>답변</td>
+                  <% } %>
+                </tr>
+              <% }) %>
+            <% } %>
+          </tbody>
+        </table>
+    </div>
+    <div>
+      <% include ../../partials/pagination %>
+    </div>
+  <% } %>
+</div>

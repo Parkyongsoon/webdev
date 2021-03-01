@@ -1,0 +1,93 @@
+<div>
+  <h1>Welcome! Eluly!</h1>
+  <% include ../partials/header %>
+  <% include ../partials/aside %>
+</div>
+<div id="content">
+  <div>
+    <form action="/admin/api/member/search" method="get">
+      <select name="searchType" id="">
+        <option value="name"<%= searchType==="name"?select="selected":"" %>>이름</option>
+        <option value="major"<%= searchType==="major"?select="selected":"" %>>전공</option>
+        <option value="role"<%= searchType==="role"?select="selected":"" %>>권한</option>
+      </select>
+      <input type="text" name="search" id="search">
+      <button type="submit" value="Search">검색</button>
+    </form>
+  </div>
+  <% if(!hits) { %>
+  <div>
+    <table>
+      <thead>
+        <tr>
+          <th>번호</th>
+          <th>이름</th>
+          <th>구분</th>
+          <th>등록일</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%if(!list || list.length === 0) { %>
+          <tr>
+            <td colspan="6" style="text-align: center">게시글 없다</td>
+          </tr>
+        <% } else { %>
+          <% list.forEach(function(l) { %>
+            <tr>
+              <td><%= l.id %></td>
+              <td><a href="/admin/api/member/<%=l.id%>"><%= l.name %></a></td>
+              <td><%= l.role %></td>
+              <td><%= locals.moment(l.createdAt).format('YYYY/MM/DD HH:mm') %></td>
+              <td>
+                <form action="/admin/api/member/delete/<%=l.id%>?_method=delete" method="post">
+                  <button type="submit" onclick="return confirm('정말 탈퇴?')">탈퇴</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <% include ../partials/pagination %>
+  </div>
+  <% } else { %>
+    <div>
+        <table>
+          <thead>
+            <tr>
+              <th>번호</th>
+              <th>이름</th>
+              <th>구분</th>
+              <th>등록일</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (hits.length === 0) { %>
+              <tr>
+                <td>해당 게시물이 없습니다.</td>
+              </tr>
+            <% } else { %>
+              <% hits.forEach(function(h) { %>
+                <tr>
+                  <td><%= h._source.id %></td>
+                  <td><a href="/admin/api/member/<%=h._source.id%>"><%= h._source.name%></a></td>
+                  <td><%= h._source.role %></td>
+                  <td><%= locals.moment(h._source.createdat).format('YYYY/MM/DD HH:mm') %></td>
+                  <td>
+                    <form action="/admin/api/member/delete/<%=h._source.id%>?_method=delete" method="post">
+                      <button type="submit" onclick="return confirm('정말 탈퇴?')">탈퇴</button>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+            <% } %>
+          </tbody>
+        </table>
+    </div>
+    <div>
+      <% include ../partials/pagination %>
+    </div>
+  <% } %>
+</div>

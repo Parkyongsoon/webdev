@@ -1,0 +1,103 @@
+<div>
+  <h1>Welcome! Eluly!</h1>
+  <% include ../partials/header %>
+  <% include ../partials/aside %>
+</div>
+<div id="content">
+  <div>
+    <a href="/admin/api/popup/add">글쓰기</a>
+  </div>
+  <div>
+    <form action="/admin/api/popup/search" method="get">
+      <select name="searchType" id="">
+        <option value="title" <%= searchType==="title"?select="selected":"" %>>제목</option>
+        <option value="name"<%= searchType==="name"?select="selected":"" %>>이름</option>
+      </select>
+      <input type="text" name="search" id="search">
+      <button type="submit" value="Search">검색</button>
+    </form>
+  </div>
+  <% if(!hits) { %>
+  <div>
+    <table>
+      <thead>
+        <tr>
+          <th>번호</th>
+          <th>제목</th>
+          <th>이름</th>
+          <th>가로</th>
+          <th>세로</th>
+          <th>작성일</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if(!list || list.length === 0) { %>
+          <tr>
+            <td colspan="6" style="text-align: center">게시글 없다</td>
+          </tr>
+        <% } else { %>
+          <% list.forEach(function(l) { %>
+            <tr>
+              <td><%= l.id %></td>
+              <td><a href="/admin/api/popup/<%=l.id%>"><%= l.title%></a></td>
+              <td><%= l.name %></td>
+              <td><%= l.width %></td>
+              <td><%= l.height %></td>
+              <td><%= locals.moment(l.createdAt).format('YYYY/MM/DD HH:mm') %></td>
+              <td>
+                <form action="/admin/api/popup/delete/<%= l.id %>?_method=delete" method="post">
+                  <button type="submit" onclick="return confirm('정말 삭제?');">삭제</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <% include ../partials/pagination %>
+  </div>
+  <% } else { %>
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>이름</th>
+            <th>가로</th>
+            <th>세로</th>
+            <th>작성일</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (hits.length === 0) { %>
+            <tr>
+              <td>해당 게시물이 없습니다.</td>
+            </tr>
+          <% } else { %>
+            <% hits.forEach(function(h) { %>
+              <tr>
+                <td><%= h._source.id %></td>
+                <td><a href="/admin/api/popup/<%=h._source.id%>"><%= h._source.title%></a></td>
+                <td><%= h._source.name %></td>
+                <td><%= h._source.width %></td>
+                <td><%= h._source.height %></td>
+                <td><%= locals.moment(h._source.createdAt).format('YYYY/MM/DD HH:mm') %></td>
+                <td>
+                  <form action="/admin/api/popup/delete/<%= h._source.id %>" method="post">
+                    <button type="submit" onclick="return confirm('정말 삭제?');">삭제</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          <% } %>          
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <% include ../partials/pagination %>
+    </div>
+  <% } %>
+</div>

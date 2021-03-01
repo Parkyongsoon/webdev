@@ -1,0 +1,35 @@
+<div>
+  <aside id="sideBar">
+    <div id="accordion" role="tablist">
+      <div class="card">
+        <div class="card-header" role="tab">
+          <a href="/"> Home </a>
+        </div>
+      </div>
+      <div class="card-header" role="tab">
+        <span><a href="/api/myPage/profile/<%= locals.isAuthenticate.userId %>">프로필 수정</a></span>
+      </div>
+      <div class="card-header" role="tab">
+        <span><a href="/api/myPage/userInfo/auth/<%= locals.isAuthenticate.userId %>">개인정보 수정</a></span>
+      </div>
+      <div class="card-body">
+        <a href="/api/myPage/myIdea/pending/<%= locals.isAuthenticate.userId %>">대기 중</a>
+      </div>
+      <div class="card-body">
+        <a href="/api/myPage/myIdea/confirm/<%= locals.isAuthenticate.userId %>">확정</a>
+      </div>
+      <div class="card-body">
+        <a href="/api/myPage/myPayment/pending/<%= locals.isAuthenticate.userId %>">결제 대기 중</a>
+      </div>
+      <div class="card-body">
+        <a href="/api/myPage/myPayment/confirm/<%= locals.isAuthenticate.userId %>">결제 완료</a>
+      </div>
+      <div class="card-header" role="tab">
+        <span><a href="/api/myPage/myQnA/<%= locals.isAuthenticate.userId %>">myQnA</a></span>
+      </div>
+      <div class="card-header" role="tab">
+        <span><a href="/api/myPage/memberDelete/auth/<%= locals.isAuthenticate.userId %>">회원탈퇴</a></span>
+      </div>
+    </div>  
+  </aside>
+</div>

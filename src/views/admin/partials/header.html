@@ -1,0 +1,17 @@
+<div>
+  <div>
+    <div>
+      <p><%= locals.isAuthenticate.userName %>님 어서옵쇼</p>
+    </div>
+    <div>
+      <p><a class="dropdown-item" href="/admin/api/myPage/<%= locals.isAuthenticate.userId %>">마이페이지</a></p>
+    </div>
+    <div>
+      <form action="/admin/api/auth/logout" method="post">
+        <div>
+          <button type="submit">로그아웃</button>
+        </div>
+      </form>
+    </div>
+  </div>  
+</div>

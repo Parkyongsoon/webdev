@@ -1,0 +1,48 @@
+<div>
+  <div id="content">
+    <div>
+      <div>
+        <div>
+          <span><a href="/admin/api/notice/edit/<%= view.id %>" class="btn btn-info sm">글 수정</a></span>
+        </div>
+        <div>
+          <form action="/admin/api/notice/delete/<%= view.id %>?_method=delete" method="post">
+            <button type="submit" class="btn btn-danger sm" onclick="return confirm('삭제하시겠습니까?')">글 삭제</button>
+            <input type="hidden" name="contentId" value="<%= view.id %>">
+          </form>
+        </div>
+        <div>
+          <label for="">제목</label>
+          <span><%= view.title %></span>
+        </div>
+        <div>
+          <label for="">이름</label>
+          <span><%= view.name %></span>
+        </div>
+        <div>
+          <% if(view.noti === true) { %>
+            <label for="">공지</label>
+            <input type="checkbox" name="noti" id="noti" checked disabled>
+          <% } else { %>
+            <label for="">공지</label>
+            <input type="checkbox" name="noti" id="noti" disabled>
+          <% } %>
+        </div>
+        <div>
+          <label for="">file : </label>
+          <% if(!view.files) { %>
+            <span>파일이 없습니다</span>
+          <% } else { %>
+            <% for(let i = 0; i < view.files.length; i ++) { %>
+              <span><a href="/admin/api/notice/<%= view.id %>/download/<%= view.files[i] %>"><%= view.files[i] %></a></span>
+            <% } %>
+          <% } %>
+        </div>
+        <div>
+          <label for="">내용</label>
+          <span><%- view.content %></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
