@@ -65,8 +65,8 @@ export const findPassword = async ctx => {
         secure: false,
         service: 'Gmail',
         auth: {
-          user: 'pungryugeak@gmail.com',
-          pass: 'dmlan05121918!@'
+          user: 'email',
+          pass: 'password'
         }
       });
 
