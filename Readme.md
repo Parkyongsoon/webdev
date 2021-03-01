@@ -24,45 +24,45 @@
 ===
 
 ∙   
-|_ src   
-| |_ api   
-| | |_ admin     // 각 폴더 index.js = router / *.ctrl.js = controller   
-| | |_ designer  // 각 폴더 index.js = router / *.ctrl.js = controller   
-| | |_ user      // 각 폴더 index.js = router / *.ctrl.js = controller   
-| | |_ index.js  // 각 폴더 router 집합   
-| |   
-| |_ config      // Postgresql 연결 설정   
-| |   
-| |_ models   
-| |  |_ admin     // admin용 model   
-| |  |_ home      // 범용 model   
-| |  |_ index.js  // sequelize 설정   
-| |   
-| |_ public   
-| | |_ css        // css 폴더   
-| | |_ fonts      // font 폴더   
-| | |_ img        // img 폴더   
-| | |_ js         // js 폴더   
-| | |_ uploads    // file upload 폴더   
-| |   
-| |_ utils        // 기타 기능 모듈   
-| |   
-| |_ views        // ejs template   
-| | |_ admin   
-| | |_ designer   
-| | |_ user   
-| | |_ index.html   
-| |   
-| |_ index.js     // esm 설정   
-| |   
-| |_ server.js    // server   
+|__ src   
+|  |__ api   
+|  |  |_ admin     // 각 폴더 index.js = router / *.ctrl.js = controller   
+|  |  |_ designer  // 각 폴더 index.js = router / *.ctrl.js = controller   
+|  |  |_ user      // 각 폴더 index.js = router / *.ctrl.js = controller   
+|  |  |_ index.js  // 각 폴더 router 집합   
+|  |    
+|  |__ config      // Postgresql 연결 설정   
+|  |    
+|  |__ models   
+|  |  |_ admin     // admin용 model   
+|  |  |_ home      // 범용 model   
+|  |  |_ index.js  // sequelize 설정   
+|  |    
+|  |__ public   
+|  |  |_ css        // css 폴더   
+|  |  |_ fonts      // font 폴더   
+|  |  |_ img        // img 폴더   
+|  |  |_ js         // js 폴더   
+|  |  |_ uploads    // file upload 폴더   
+|  |    
+|  |__ utils        // 기타 기능 모듈   
+|  |    
+|  |__ views        // ejs template   
+|  |  |_ admin   
+|  |  |_ designer   
+|  |  |_ user   
+|  |  |_ index.html   
+|  |    
+|  |__ index.js     // esm 설정   
+|  |    
+|  |__ server.js    // server   
 |   
-|_ .env   
+|__ .env   
 |   
-|_ package-lock.json   
+|__ package-lock.json   
 |   
-|_ package.json   
+|__ package.json   
 |   
-|_ Readme.md   
+|__ Readme.md   
 |   
-|_ yarn.lock   
+|__ yarn.lock   
